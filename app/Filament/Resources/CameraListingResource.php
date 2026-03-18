@@ -71,7 +71,6 @@ class CameraListingResource extends Resource
                     ->reorderable(true)
                     ->deletable(true)
                     ->previewable(true)
-                    ->conversionsDiskName('public')
                     ->imageEditor(false)
                     ->imageResizeTargetWidth(null)
                     ->imageResizeTargetHeight(null)
