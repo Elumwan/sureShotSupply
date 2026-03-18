@@ -68,8 +68,15 @@ class CameraListingResource extends Resource
                 SpatieMediaLibraryFileUpload::make('images')
                     ->collection('images')
                     ->multiple()
-                    ->reorderable()
+                    ->reorderable(true)
+                    ->deletable(true)
+                    ->previewable(true)
+                    ->conversionsDiskName('public')
                     ->imageEditor(false)
+                    ->imageResizeTargetWidth(null)
+                    ->imageResizeTargetHeight(null)
+                    ->imagePreviewHeight('100')
+                    ->loadingIndicatorPosition('left')
                     ->acceptedFileTypes([
                         'image/jpeg',
                         'image/png',
