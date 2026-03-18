@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\SiteSetting;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -35,9 +36,21 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
+        $heroImage = SiteSetting::get('hero_image');
+
         return [
             ...parent::share($request),
-            //
+            'flash' => [
+                'success' => fn () => $request->session()->get('success'),
+            ],
+            'siteSettings' => [
+                'heroImage' => $heroImage ? asset('storage/'.$heroImage) : null,
+                'heroTitle' => SiteSetting::get('hero_title', 'Gear for those who shoot first.'),
+                'heroSubtitle' => SiteSetting::get(
+                    'hero_subtitle',
+                    'Handpicked cameras and accessories for photographers who care about what they carry.'
+                ),
+            ],
         ];
     }
 }

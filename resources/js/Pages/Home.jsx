@@ -1,32 +1,67 @@
-export default function Home({ featuredCamera, cameras, products }) {
+import CameraCard from '../Components/CameraCard';
+import FeaturedCameraCard from '../Components/FeaturedCameraCard';
+import Hero from '../Components/Hero';
+import ProductCard from '../Components/ProductCard';
+import SectionHeader from '../Components/SectionHeader';
+import SiteLayout, { useSiteSettings } from '../Layouts/SiteLayout';
+
+function Home({ featuredCamera, cameras, products }) {
+    const siteSettings = useSiteSettings();
+    const moreCameras = (cameras ?? []).filter((camera) => camera.slug !== featuredCamera?.slug);
+
     return (
-        <main className="mx-auto max-w-5xl p-8">
-            <h1 className="text-3xl font-semibold">SureShotSupply</h1>
+        <>
+            <Hero
+                heroImage={siteSettings.heroImage}
+                heroTitle={siteSettings.heroTitle}
+                heroSubtitle={siteSettings.heroSubtitle}
+            />
 
-            <section className="mt-8">
-                <h2 className="text-xl font-medium">Featured Camera</h2>
-                <p className="mt-2">
-                    {featuredCamera ? featuredCamera.name : 'No featured camera available.'}
-                </p>
-            </section>
+            <main>
+                {featuredCamera ? (
+                    <section className="mx-auto max-w-7xl px-6 py-16 lg:px-10 lg:py-20">
+                        <SectionHeader
+                            eyebrow="Currently available"
+                            title="Featured camera"
+                            href="/cameras"
+                            linkLabel="View all cameras →"
+                        />
 
-            <section className="mt-8">
-                <h2 className="text-xl font-medium">Cameras</h2>
-                <ul className="mt-2 list-disc pl-6">
-                    {cameras.map((camera) => (
-                        <li key={camera.id}>{camera.name}</li>
-                    ))}
-                </ul>
-            </section>
+                        <div className="mt-10">
+                            <FeaturedCameraCard camera={featuredCamera} />
+                        </div>
+                    </section>
+                ) : null}
 
-            <section className="mt-8">
-                <h2 className="text-xl font-medium">Products</h2>
-                <ul className="mt-2 list-disc pl-6">
-                    {products.map((product) => (
-                        <li key={product.id}>{product.name}</li>
-                    ))}
-                </ul>
-            </section>
-        </main>
+                <section className="mx-auto max-w-7xl px-6 py-16 lg:px-10 lg:py-20">
+                    <SectionHeader eyebrow="More cameras" title="A small run of available bodies." />
+
+                    <div className="mt-10 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+                        {moreCameras.map((camera) => (
+                            <CameraCard key={camera.id} camera={camera} />
+                        ))}
+                    </div>
+                </section>
+
+                <section className="mx-auto max-w-7xl px-6 py-16 lg:px-10 lg:py-20">
+                    <SectionHeader
+                        eyebrow="Always in stock"
+                        title="Accessories"
+                        href="/shop"
+                        linkLabel="View all →"
+                    />
+
+                    <div className="mt-10 grid gap-6 lg:grid-cols-3">
+                        {products.map((product) => (
+                            <ProductCard key={product.id} product={product} />
+                        ))}
+                    </div>
+                </section>
+            </main>
+        </>
     );
 }
+
+Home.layout = (page) => <SiteLayout>{page}</SiteLayout>;
+
+export default Home;

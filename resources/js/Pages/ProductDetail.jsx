@@ -1,0 +1,44 @@
+import { Link } from '@inertiajs/react';
+
+import MediaPlaceholder from '../Components/MediaPlaceholder';
+import { formatPrice, stockStatus } from '../lib/storefront';
+import SiteLayout from '../Layouts/SiteLayout';
+
+function ProductDetail({ product }) {
+    return (
+        <main className="mx-auto max-w-7xl px-6 py-16 lg:px-10 lg:py-20">
+            <Link
+                href="/shop"
+                className="text-[10px] uppercase tracking-[0.22em] text-site-text-faint hover:text-site-amber"
+            >
+                ← All accessories
+            </Link>
+
+            <section className="mt-8 grid gap-10 lg:grid-cols-[1.05fr_0.95fr]">
+                <MediaPlaceholder label={product.name} className="min-h-[420px] lg:min-h-[620px]" />
+
+                <div className="flex flex-col justify-between">
+                    <div>
+                        <p className="eyebrow">Permanent stock</p>
+                        <h1 className="mt-4 text-4xl leading-tight sm:text-5xl">{product.name}</h1>
+                        <p className="mt-6 text-sm uppercase tracking-[0.18em] text-site-text-faint">
+                            {stockStatus(product.stock_quantity)}
+                        </p>
+                        <p className="mt-8 text-2xl font-light text-site-amber">{formatPrice(product.price)}</p>
+                        <button type="button" className="ghost-button mt-8">
+                            Add to bag
+                        </button>
+                    </div>
+
+                    <div className="prose prose-invert mt-10 max-w-none prose-p:text-site-text-faint">
+                        <p>{product.description || 'A dependable piece for daily carry.'}</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+    );
+}
+
+ProductDetail.layout = (page) => <SiteLayout>{page}</SiteLayout>;
+
+export default ProductDetail;

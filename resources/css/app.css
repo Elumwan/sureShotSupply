@@ -1,11 +1,44 @@
-@import 'tailwindcss';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
-@source '../../storage/framework/views/*.php';
-@source '../**/*.blade.php';
-@source '../**/*.js';
+@layer base {
+    html {
+        scroll-behavior: smooth;
+    }
 
-@theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+    body {
+        @apply bg-site-bg font-sans font-light text-site-text antialiased;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        @apply font-serif font-normal italic text-site-text;
+    }
+
+    a {
+        @apply transition-colors duration-200;
+    }
+
+    ::selection {
+        @apply bg-site-amber/20 text-site-text;
+    }
+}
+
+@layer components {
+    .eyebrow {
+        @apply text-[10px] uppercase tracking-[0.22em] text-site-amber;
+    }
+
+    .ghost-button {
+        @apply inline-flex items-center justify-center border border-site-border-light bg-transparent px-4 py-3 text-[10px] uppercase tracking-[0.2em] text-site-text transition hover:border-site-amber hover:text-site-amber focus:outline-none focus:ring-1 focus:ring-site-amber;
+    }
+
+    .panel-surface {
+        @apply border border-site-border bg-site-card;
+    }
 }
