@@ -56,6 +56,7 @@ class ProductResource extends Resource
                     ->imageResizeTargetHeight(null)
                     ->imagePreviewHeight('100')
                     ->loadingIndicatorPosition('left')
+                    ->removeUploadedFileButtonPosition('right')
                     ->acceptedFileTypes([
                         'image/jpeg',
                         'image/png',
