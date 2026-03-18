@@ -1,13 +1,17 @@
 import { Link } from '@inertiajs/react';
 
 import { formatPrice } from '../lib/storefront';
-import MediaPlaceholder from './MediaPlaceholder';
+import ProductImage from './ProductImage';
 
 export default function ProductCard({ product, showButton = false }) {
     return (
         <div className="panel-surface overflow-hidden">
             <Link href={`/shop/${product.slug}`} className="group block">
-                <MediaPlaceholder label={product.name} className="min-h-[220px] border-0" />
+                <ProductImage
+                    src={product.primary_image}
+                    alt={product.name}
+                    className="min-h-[220px] border-0"
+                />
                 <div className="p-6">
                     <div className="mb-4 inline-flex h-9 w-9 items-center justify-center rounded-full border border-site-border-light text-site-amber">
                         <span className="text-sm">+</span>

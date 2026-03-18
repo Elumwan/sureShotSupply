@@ -1,13 +1,14 @@
 import { Link } from '@inertiajs/react';
 
 import { formatPrice } from '../lib/storefront';
-import MediaPlaceholder from './MediaPlaceholder';
+import ProductImage from './ProductImage';
 
 export default function CameraCard({ camera }) {
     return (
         <Link href={`/cameras/${camera.slug}`} className="group panel-surface overflow-hidden">
-            <MediaPlaceholder
-                label={camera.make}
+            <ProductImage
+                src={camera.primary_image}
+                alt={camera.name}
                 className="min-h-[240px] border-0 transition duration-300 group-hover:scale-[1.01]"
             />
 

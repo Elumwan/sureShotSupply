@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ProductResource\Pages;
 use App\Models\Product;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Toggle;
@@ -44,8 +45,20 @@ class ProductResource extends Resource
                     ->required()
                     ->numeric()
                     ->default(0),
-                TextInput::make('image_path')
-                    ->maxLength(255),
+                SpatieMediaLibraryFileUpload::make('images')
+                    ->collection('images')
+                    ->multiple()
+                    ->reorderable()
+                    ->imageEditor(false)
+                    ->acceptedFileTypes([
+                        'image/jpeg',
+                        'image/png',
+                        'image/webp',
+                    ])
+                    ->maxSize(10240)
+                    ->label('Product images')
+                    ->helperText('First image will be used as the primary listing image')
+                    ->columnSpanFull(),
                 Toggle::make('is_active')
                     ->required(),
             ]);

@@ -35,7 +35,6 @@ class ProductFactory extends Factory
             'description' => fake()->sentence(12),
             'price' => fake()->randomElement([800, 1200, 1800, 2400, 3200, 4500]),
             'stock_quantity' => fake()->numberBetween(5, 150),
-            'image_path' => null,
             'is_active' => true,
         ];
     }

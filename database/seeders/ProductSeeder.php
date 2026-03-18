@@ -40,7 +40,6 @@ class ProductSeeder extends Seeder
                 [
                     ...$product,
                     'slug' => Str::slug($product['name']),
-                    'image_path' => null,
                     'is_active' => true,
                 ]
             );

@@ -1,16 +1,22 @@
 import { Link } from '@inertiajs/react';
 
 import { cameraMeta, formatPrice } from '../lib/storefront';
-import MediaPlaceholder from './MediaPlaceholder';
+import ProductImage from './ProductImage';
 
 export default function FeaturedCameraCard({ camera }) {
     if (!camera) {
         return null;
     }
 
+    const featuredImage = camera.featured_image ?? camera.full_images?.[0]?.featured ?? null;
+
     return (
         <div className="panel-surface grid overflow-hidden lg:grid-cols-[1.15fr_0.85fr]">
-            <MediaPlaceholder label={camera.name} className="min-h-[280px] border-0 lg:min-h-[420px]" />
+            <ProductImage
+                src={featuredImage}
+                alt={camera.name}
+                className="min-h-[280px] border-0 lg:min-h-[420px]"
+            />
 
             <div className="flex flex-col justify-between bg-site-card-alt p-8 sm:p-10">
                 <div>

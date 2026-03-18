@@ -7,21 +7,22 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return inertia('Home', [
-        'featuredCamera' => CameraListing::featured()->available()->first(),
-        'cameras' => CameraListing::available()->limit(3)->get(),
-        'products' => Product::where('is_active', true)->get(),
+        'featuredCamera' => CameraListing::with('media')->featured()->available()->first(),
+        'cameras' => CameraListing::with('media')->available()->limit(3)->get(),
+        'products' => Product::with('media')->where('is_active', true)->get(),
     ]);
 });
 
 Route::get('/cameras', function () {
     return inertia('Cameras', [
-        'featuredCamera' => CameraListing::featured()->available()->first(),
-        'cameras' => CameraListing::available()->paginate(12),
+        'featuredCamera' => CameraListing::with('media')->featured()->available()->first(),
+        'cameras' => CameraListing::with('media')->available()->paginate(12),
     ]);
 });
 
 Route::get('/cameras/{slug}', function (string $slug) {
-    $camera = CameraListing::where('slug', $slug)
+    $camera = CameraListing::with('media')
+        ->where('slug', $slug)
         ->where('status', 'available')
         ->firstOrFail();
 
@@ -32,12 +33,13 @@ Route::get('/cameras/{slug}', function (string $slug) {
 
 Route::get('/shop', function () {
     return inertia('Shop', [
-        'products' => Product::where('is_active', true)->get(),
+        'products' => Product::with('media')->where('is_active', true)->get(),
     ]);
 });
 
 Route::get('/shop/{slug}', function (string $slug) {
-    $product = Product::where('slug', $slug)
+    $product = Product::with('media')
+        ->where('slug', $slug)
         ->where('is_active', true)
         ->firstOrFail();
 

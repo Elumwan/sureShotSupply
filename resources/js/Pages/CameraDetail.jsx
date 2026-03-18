@@ -1,10 +1,15 @@
+import { useState } from 'react';
 import { Link } from '@inertiajs/react';
 
-import MediaPlaceholder from '../Components/MediaPlaceholder';
+import ProductImage from '../Components/ProductImage';
 import { formatPrice } from '../lib/storefront';
 import SiteLayout from '../Layouts/SiteLayout';
 
 function CameraDetail({ camera }) {
+    const images = camera.full_images ?? [];
+    const [selectedIndex, setSelectedIndex] = useState(0);
+    const selectedImage = images[selectedIndex] ?? null;
+
     return (
         <main className="mx-auto max-w-7xl px-6 py-16 lg:px-10 lg:py-20">
             <Link
@@ -15,7 +20,36 @@ function CameraDetail({ camera }) {
             </Link>
 
             <section className="mt-8 grid gap-10 lg:grid-cols-[1.05fr_0.95fr]">
-                <MediaPlaceholder label={camera.name} className="min-h-[420px] lg:min-h-[620px]" />
+                <div>
+                    <ProductImage
+                        src={selectedImage?.full ?? camera.featured_image ?? camera.primary_image}
+                        alt={camera.name}
+                        className="min-h-[420px] border border-site-border lg:min-h-[620px]"
+                    />
+
+                    {images.length > 1 ? (
+                        <div className="mt-4 grid grid-cols-4 gap-3 sm:grid-cols-5">
+                            {images.map((image, index) => (
+                                <button
+                                    key={`${image.thumb}-${index}`}
+                                    type="button"
+                                    onClick={() => setSelectedIndex(index)}
+                                    className={`overflow-hidden border ${
+                                        index === selectedIndex
+                                            ? 'border-site-amber'
+                                            : 'border-site-border'
+                                    }`}
+                                >
+                                    <ProductImage
+                                        src={image.thumb}
+                                        alt={`${camera.name} ${index + 1}`}
+                                        className="aspect-[4/3] w-full"
+                                    />
+                                </button>
+                            ))}
+                        </div>
+                    ) : null}
+                </div>
 
                 <div className="flex flex-col justify-between">
                     <div>

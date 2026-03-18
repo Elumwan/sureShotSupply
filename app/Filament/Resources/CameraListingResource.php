@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\CameraListingResource\Pages;
 use App\Models\CameraListing;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
@@ -64,6 +65,20 @@ class CameraListingResource extends Resource
                     ->required()
                     ->numeric()
                     ->helperText('Enter amount in cents (e.g. 32000 for $320.00)'),
+                SpatieMediaLibraryFileUpload::make('images')
+                    ->collection('images')
+                    ->multiple()
+                    ->reorderable()
+                    ->imageEditor(false)
+                    ->acceptedFileTypes([
+                        'image/jpeg',
+                        'image/png',
+                        'image/webp',
+                    ])
+                    ->maxSize(10240)
+                    ->label('Camera images')
+                    ->helperText('First image is shown as primary. Upload multiple angles.')
+                    ->columnSpanFull(),
                 Select::make('status')
                     ->required()
                     ->options([
