@@ -1,6 +1,7 @@
 import { Link } from '@inertiajs/react';
 
 import { cameraMeta, formatPrice } from '../lib/storefront';
+import AddToBagButton from './AddToBagButton';
 import ProductImage from './ProductImage';
 
 export default function FeaturedCameraCard({ camera }) {
@@ -39,9 +40,17 @@ export default function FeaturedCameraCard({ camera }) {
 
                 <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                     <p className="text-xl font-light text-site-amber">{formatPrice(camera.price)}</p>
-                    <Link href={`/cameras/${camera.slug}`} className="ghost-button">
-                        View listing
-                    </Link>
+                    <div className="flex flex-col gap-3 sm:flex-row">
+                        <Link href={`/cameras/${camera.slug}`} className="ghost-button">
+                            View listing
+                        </Link>
+                        <AddToBagButton
+                            type="camera"
+                            id={camera.id}
+                            disabled={camera.status !== 'available'}
+                            disabledLabel={camera.status === 'sold' ? 'Sold' : 'Unavailable'}
+                        />
+                    </div>
                 </div>
             </div>
         </div>

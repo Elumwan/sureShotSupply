@@ -1,7 +1,7 @@
 export function formatPrice(cents) {
-    return new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat('en-AU', {
         style: 'currency',
-        currency: 'USD',
+        currency: 'AUD',
     }).format((cents ?? 0) / 100);
 }
 
@@ -19,4 +19,8 @@ export function stockStatus(quantity) {
     }
 
     return 'In stock';
+}
+
+export function itemIsInCart(cartItems, type, id) {
+    return (cartItems ?? []).some((item) => item.type === type && item.id === id);
 }

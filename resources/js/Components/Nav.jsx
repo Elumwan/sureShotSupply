@@ -1,5 +1,5 @@
 import { Disclosure } from '@headlessui/react';
-import { Link } from '@inertiajs/react';
+import { Link, usePage } from '@inertiajs/react';
 
 const links = [
     { label: 'Shop', href: '/shop' },
@@ -9,6 +9,8 @@ const links = [
 ];
 
 export default function Nav() {
+    const { cartCount = 0 } = usePage().props;
+
     return (
         <Disclosure
             as="nav"
@@ -33,9 +35,12 @@ export default function Nav() {
                             ))}
                         </div>
 
-                        <div className="hidden text-[10px] uppercase tracking-[0.2em] text-site-text-faint md:block">
-                            Bag — 0
-                        </div>
+                        <Link
+                            href="/cart"
+                            className="hidden text-[10px] uppercase tracking-[0.2em] text-site-text-faint hover:text-site-text md:block"
+                        >
+                            Bag — {cartCount}
+                        </Link>
 
                         <div className="md:hidden">
                             <Disclosure.Button className="flex flex-col gap-1.5 p-2 text-site-text-faint transition hover:text-site-text">
@@ -63,9 +68,12 @@ export default function Nav() {
                                     {link.label}
                                 </Link>
                             ))}
-                            <div className="pt-2 text-[10px] uppercase tracking-[0.22em] text-site-text-faint">
-                                Bag — 0
-                            </div>
+                            <Link
+                                href="/cart"
+                                className="pt-2 text-[10px] uppercase tracking-[0.22em] text-site-text-faint"
+                            >
+                                Bag — {cartCount}
+                            </Link>
                         </div>
                     </Disclosure.Panel>
                 </>

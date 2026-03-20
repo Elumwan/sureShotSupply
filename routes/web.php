@@ -1,9 +1,14 @@
 <?php
 
+use App\Http\Controllers\CartController;
+use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\WebhookController;
 use App\Models\CameraListing;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+
+Route::post('/webhook/stripe', [WebhookController::class, 'handle']);
 
 Route::get('/', function () {
     return inertia('Home', [
@@ -61,3 +66,12 @@ Route::post('/contact', function (Request $request) {
 
     return back()->with('success', 'Thanks for your message. We will be in touch.');
 });
+
+Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
+Route::post('/cart/remove', [CartController::class, 'remove'])->name('cart.remove');
+Route::post('/cart/update', [CartController::class, 'update'])->name('cart.update');
+
+Route::post('/checkout', [CheckoutController::class, 'redirect'])->name('checkout.redirect');
+Route::get('/checkout/success', [CheckoutController::class, 'success'])->name('checkout.success');
+Route::get('/checkout/cancel', [CheckoutController::class, 'cancel'])->name('checkout.cancel');

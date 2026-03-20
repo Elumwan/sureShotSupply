@@ -51,12 +51,12 @@ function Home({ featuredCamera, cameras, products }) {
                         linkLabel="View all →"
                     />
 
-                    <div className="mt-10 grid gap-6 lg:grid-cols-3">
-                        {products.map((product) => (
-                            <ProductCard key={product.id} product={product} />
-                        ))}
-                    </div>
-                </section>
+                        <div className="mt-10 grid gap-6 lg:grid-cols-3">
+                            {products.map((product) => (
+                                <ProductCard key={product.id} product={product} showButton />
+                            ))}
+                        </div>
+                    </section>
             </main>
         </>
     );

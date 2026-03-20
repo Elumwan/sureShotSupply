@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Models\SiteSetting;
+use App\Services\CartService;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -42,6 +43,7 @@ class HandleInertiaRequests extends Middleware
             ...parent::share($request),
             'flash' => [
                 'success' => fn () => $request->session()->get('success'),
+                'error' => fn () => $request->session()->get('error'),
             ],
             'siteSettings' => [
                 'heroImage' => $heroImage ? asset('storage/'.$heroImage) : null,
@@ -51,6 +53,14 @@ class HandleInertiaRequests extends Middleware
                     'Handpicked cameras and accessories for photographers who care about what they carry.'
                 ),
             ],
+            'cartCount' => app(CartService::class)->count(),
+            'cartItems' => fn () => collect(app(CartService::class)->items())
+                ->map(fn (array $item): array => [
+                    'type' => $item['type'],
+                    'id' => $item['id'],
+                ])
+                ->values()
+                ->all(),
         ];
     }
 }

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link } from '@inertiajs/react';
 
+import AddToBagButton from '../Components/AddToBagButton';
 import ProductImage from '../Components/ProductImage';
 import { formatPrice } from '../lib/storefront';
 import SiteLayout from '../Layouts/SiteLayout';
@@ -66,9 +67,13 @@ function CameraDetail({ camera }) {
                             </p>
                         ) : null}
                         <p className="mt-8 text-2xl font-light text-site-amber">{formatPrice(camera.price)}</p>
-                        <button type="button" className="ghost-button mt-8">
-                            Add to bag
-                        </button>
+                        <AddToBagButton
+                            type="camera"
+                            id={camera.id}
+                            disabled={camera.status !== 'available'}
+                            disabledLabel={camera.status === 'sold' ? 'Sold' : 'Unavailable'}
+                            className="mt-8"
+                        />
                     </div>
 
                     {camera.description ? (

@@ -1,6 +1,7 @@
 import { Link } from '@inertiajs/react';
 
 import { formatPrice } from '../lib/storefront';
+import AddToBagButton from './AddToBagButton';
 import ProductImage from './ProductImage';
 
 export default function ProductCard({ product, showButton = false }) {
@@ -26,9 +27,13 @@ export default function ProductCard({ product, showButton = false }) {
 
             {showButton ? (
                 <div className="px-6 pb-6">
-                    <button type="button" className="ghost-button w-full">
-                        Add to bag
-                    </button>
+                    <AddToBagButton
+                        type="product"
+                        id={product.id}
+                        disabled={product.stock_quantity <= 0}
+                        disabledLabel={product.stock_quantity <= 0 ? 'Out of Stock' : 'Unavailable'}
+                        className="w-full"
+                    />
                 </div>
             ) : null}
         </div>

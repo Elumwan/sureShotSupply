@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link } from '@inertiajs/react';
 
+import AddToBagButton from '../Components/AddToBagButton';
 import ProductImage from '../Components/ProductImage';
 import { formatPrice, stockStatus } from '../lib/storefront';
 import SiteLayout from '../Layouts/SiteLayout';
@@ -59,9 +60,13 @@ function ProductDetail({ product }) {
                             {stockStatus(product.stock_quantity)}
                         </p>
                         <p className="mt-8 text-2xl font-light text-site-amber">{formatPrice(product.price)}</p>
-                        <button type="button" className="ghost-button mt-8">
-                            Add to bag
-                        </button>
+                        <AddToBagButton
+                            type="product"
+                            id={product.id}
+                            disabled={product.stock_quantity <= 0}
+                            disabledLabel={product.stock_quantity <= 0 ? 'Out of Stock' : 'Unavailable'}
+                            className="mt-8"
+                        />
                     </div>
 
                     <div className="prose prose-invert mt-10 max-w-none prose-p:text-site-text-faint">
