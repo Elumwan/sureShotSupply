@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\NewOrderAlert;
+use App\Mail\OrderConfirmation;
 use App\Models\CameraListing;
 use App\Models\Order;
 use App\Models\Product;
 use App\Services\CartService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
 use Stripe\Exception\SignatureVerificationException;
 use Stripe\Webhook;
@@ -88,6 +91,16 @@ class WebhookController extends Controller
                     }
                 }
             }
+        }
+
+        $order->load('items');
+
+        if (filled($order->customer_email)) {
+            Mail::to($order->customer_email)->send(new OrderConfirmation($order));
+        }
+
+        if (filled(config('mail.owner_email'))) {
+            Mail::to(config('mail.owner_email'))->send(new NewOrderAlert($order));
         }
 
         try {

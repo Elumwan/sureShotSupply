@@ -12,6 +12,10 @@ class Order extends Model
     /** @use HasFactory<\Database\Factories\OrderFactory> */
     use HasFactory;
 
+    protected $appends = [
+        'reference',
+    ];
+
     protected $fillable = [
         'stripe_session_id',
         'stripe_payment_intent',
@@ -41,5 +45,12 @@ class Order extends Model
     public function scopePending(Builder $query): Builder
     {
         return $query->where('status', 'pending');
+    }
+
+    public function getReferenceAttribute(): string
+    {
+        $id = $this->id ?? 0;
+
+        return 'SSS-'.str_pad((string) $id, 6, '0', STR_PAD_LEFT);
     }
 }
