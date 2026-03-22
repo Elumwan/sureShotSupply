@@ -38,10 +38,8 @@ class ManageSiteSettings extends Page implements HasForms
             ),
             'shipping_australia' => (int) SiteSetting::get('shipping_australia', 1000),
             'shipping_new_zealand' => (int) SiteSetting::get('shipping_new_zealand', 1500),
-            'shipping_uk' => (int) SiteSetting::get('shipping_uk', 2500),
-            'shipping_us_canada' => (int) SiteSetting::get('shipping_us_canada', 2500),
-            'shipping_europe' => (int) SiteSetting::get('shipping_europe', 3000),
-            'shipping_asia_pacific' => (int) SiteSetting::get('shipping_asia_pacific', 3000),
+            'shipping_uk_us_canada' => (int) SiteSetting::get('shipping_uk_us_canada', 2500),
+            'shipping_europe_asia_pacific' => (int) SiteSetting::get('shipping_europe_asia_pacific', 3000),
             'shipping_rest_of_world' => (int) SiteSetting::get('shipping_rest_of_world', 3500),
         ]);
     }
@@ -85,23 +83,13 @@ class ManageSiteSettings extends Page implements HasForms
                             ->required()
                             ->integer()
                             ->numeric(),
-                        TextInput::make('shipping_uk')
-                            ->label('United Kingdom')
+                        TextInput::make('shipping_uk_us_canada')
+                            ->label('UK, US & Canada')
                             ->required()
                             ->integer()
                             ->numeric(),
-                        TextInput::make('shipping_us_canada')
-                            ->label('United States & Canada')
-                            ->required()
-                            ->integer()
-                            ->numeric(),
-                        TextInput::make('shipping_europe')
-                            ->label('Europe')
-                            ->required()
-                            ->integer()
-                            ->numeric(),
-                        TextInput::make('shipping_asia_pacific')
-                            ->label('Asia Pacific')
+                        TextInput::make('shipping_europe_asia_pacific')
+                            ->label('Europe & Asia Pacific')
                             ->required()
                             ->integer()
                             ->numeric(),
@@ -128,10 +116,11 @@ class ManageSiteSettings extends Page implements HasForms
         );
         SiteSetting::set('shipping_australia', (string) ($state['shipping_australia'] ?? 1000));
         SiteSetting::set('shipping_new_zealand', (string) ($state['shipping_new_zealand'] ?? 1500));
-        SiteSetting::set('shipping_uk', (string) ($state['shipping_uk'] ?? 2500));
-        SiteSetting::set('shipping_us_canada', (string) ($state['shipping_us_canada'] ?? 2500));
-        SiteSetting::set('shipping_europe', (string) ($state['shipping_europe'] ?? 3000));
-        SiteSetting::set('shipping_asia_pacific', (string) ($state['shipping_asia_pacific'] ?? 3000));
+        SiteSetting::set('shipping_uk_us_canada', (string) ($state['shipping_uk_us_canada'] ?? 2500));
+        SiteSetting::set(
+            'shipping_europe_asia_pacific',
+            (string) ($state['shipping_europe_asia_pacific'] ?? 3000)
+        );
         SiteSetting::set('shipping_rest_of_world', (string) ($state['shipping_rest_of_world'] ?? 3500));
 
         Notification::make()

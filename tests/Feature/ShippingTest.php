@@ -13,12 +13,21 @@ it('returns the australia rate from site settings for au', function () {
         ->and(app(ShippingService::class)->getLabelForCountry('AU'))->toBe('Australia');
 });
 
-it('returns the us and canada rate for both us and ca', function () {
-    SiteSetting::set('shipping_us_canada', '2555');
+it('returns the uk, us and canada rate for gb, us and ca', function () {
+    SiteSetting::set('shipping_uk_us_canada', '2555');
 
-    expect(app(ShippingService::class)->getRateForCountry('US'))->toBe(2555)
+    expect(app(ShippingService::class)->getRateForCountry('GB'))->toBe(2555)
+        ->and(app(ShippingService::class)->getRateForCountry('US'))->toBe(2555)
         ->and(app(ShippingService::class)->getRateForCountry('CA'))->toBe(2555)
-        ->and(app(ShippingService::class)->getLabelForCountry('US'))->toBe('United States & Canada');
+        ->and(app(ShippingService::class)->getLabelForCountry('US'))->toBe('UK, US & Canada');
+});
+
+it('returns the europe and asia pacific rate for fr and jp', function () {
+    SiteSetting::set('shipping_europe_asia_pacific', '3111');
+
+    expect(app(ShippingService::class)->getRateForCountry('FR'))->toBe(3111)
+        ->and(app(ShippingService::class)->getRateForCountry('JP'))->toBe(3111)
+        ->and(app(ShippingService::class)->getLabelForCountry('FR'))->toBe('Europe & Asia Pacific');
 });
 
 it('returns the rest of world rate for unmapped countries', function () {
@@ -28,9 +37,22 @@ it('returns the rest of world rate for unmapped countries', function () {
         ->and(app(ShippingService::class)->getLabelForCountry('ZW'))->toBe('Rest of World');
 });
 
-it('uses specific australia and new zealand matches before asia pacific', function () {
+it('uses specific australia and new zealand matches before europe and asia pacific', function () {
     expect(app(ShippingService::class)->getLabelForCountry('AU'))->toBe('Australia')
         ->and(app(ShippingService::class)->getLabelForCountry('NZ'))->toBe('New Zealand');
+});
+
+it('returns exactly five stripe shipping options with the consolidated labels', function () {
+    $shippingOptions = app(ShippingService::class)->shippingOptions();
+
+    expect($shippingOptions)->toHaveCount(5)
+        ->and(collect($shippingOptions)->pluck('shipping_rate_data.display_name')->all())->toBe([
+            'Australia',
+            'New Zealand',
+            'UK, US & Canada',
+            'Europe & Asia Pacific',
+            'Rest of World',
+        ]);
 });
 
 it('stores shipping country and rate label on a completed checkout webhook', function () {
