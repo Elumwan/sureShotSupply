@@ -11,6 +11,8 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
+use Stripe\Checkout\Session as StripeCheckoutSession;
+use Stripe\Stripe;
 
 class CheckoutController extends Controller
 {
@@ -69,14 +71,56 @@ class CheckoutController extends Controller
     {
         $data = $request->validate([
             'session_id' => ['required', 'string'],
-            'country' => ['required', 'string'],
+            'country' => ['nullable', 'string'],
+            'shipping_details' => ['nullable', 'array'],
         ]);
 
-        $rate = $shippingService->getRateForCountry($data['country']);
-        $label = $shippingService->getLabelForCountry($data['country']);
+        $shippingDetails = $data['shipping_details'] ?? null;
+        $country = data_get($shippingDetails, 'address.country') ?? $data['country'] ?? null;
+
+        if (! is_string($country) || trim($country) === '') {
+            return response()->json([
+                'message' => 'A shipping_details.address.country or country value is required.',
+            ], 422);
+        }
+
+        $rate = $shippingService->getRateForCountry($country);
+        $label = $shippingService->getLabelForCountry($country);
 
         try {
-            $checkoutService->updateShippingRate($data['session_id'], $rate, $label);
+            if ($shippingDetails === null) {
+                $checkoutService->updateShippingRate($data['session_id'], $rate, $label);
+            } else {
+                Stripe::setApiKey(config('services.stripe.secret'));
+
+                StripeCheckoutSession::update($data['session_id'], [
+                    'collected_information' => [
+                        'shipping_details' => [
+                            'name' => $shippingDetails['name'] ?? '',
+                            'address' => [
+                                'line1' => $shippingDetails['address']['line1'] ?? '',
+                                'line2' => $shippingDetails['address']['line2'] ?? null,
+                                'city' => $shippingDetails['address']['city'] ?? '',
+                                'state' => $shippingDetails['address']['state'] ?? null,
+                                'postal_code' => $shippingDetails['address']['postal_code'] ?? '',
+                                'country' => $shippingDetails['address']['country'] ?? '',
+                            ],
+                        ],
+                    ],
+                    'shipping_options' => [
+                        [
+                            'shipping_rate_data' => [
+                                'type' => 'fixed_amount',
+                                'fixed_amount' => [
+                                    'amount' => $rate,
+                                    'currency' => 'aud',
+                                ],
+                                'display_name' => $label,
+                            ],
+                        ],
+                    ],
+                ]);
+            }
         } catch (\Throwable) {
             return response()->json([
                 'success' => false,

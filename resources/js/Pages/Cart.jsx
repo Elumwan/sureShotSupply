@@ -1,7 +1,7 @@
 import { Link, router, usePage } from '@inertiajs/react';
 import { EmbeddedCheckout, EmbeddedCheckoutProvider } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 
 import ProductImage from '../Components/ProductImage';
 import { formatPrice } from '../lib/storefront';
@@ -61,8 +61,9 @@ function Cart({ items = [], total = 0 }) {
         setCheckoutError('');
     }
 
-    async function handleShippingDetailsChange(event) {
-        const country = event?.shippingDetails?.address?.country;
+    const handleShippingDetailsChange = useCallback(async (event) => {
+        const shippingDetails = event?.shippingDetails;
+        const country = shippingDetails?.address?.country;
 
         if (!sessionId || !country) {
             return {
@@ -85,7 +86,7 @@ function Cart({ items = [], total = 0 }) {
                 },
                 body: JSON.stringify({
                     session_id: sessionId,
-                    country,
+                    shipping_details: shippingDetails,
                 }),
             });
 
@@ -105,7 +106,7 @@ function Cart({ items = [], total = 0 }) {
                 errorMessage: 'Sorry, we could not calculate shipping for this address. Please try again.',
             };
         }
-    }
+    }, [sessionId]);
 
     if (items.length === 0) {
         return (
