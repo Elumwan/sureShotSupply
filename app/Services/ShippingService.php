@@ -79,9 +79,24 @@ class ShippingService
                         'currency' => 'aud',
                     ],
                     'display_name' => $label,
+                    'allowed_countries' => $this->shippingCountriesForLabel($label),
                 ],
             ])
             ->values()
             ->all();
+    }
+
+    protected function shippingCountriesForLabel(string $label): array
+    {
+        if ($label === 'Rest of World') {
+            return array_values(array_diff($this->allowedCountries(), $this->mappedRegionCountries()));
+        }
+
+        return self::REGIONS[$label];
+    }
+
+    protected function mappedRegionCountries(): array
+    {
+        return array_values(array_unique(array_merge(...array_values(self::REGIONS))));
     }
 }
