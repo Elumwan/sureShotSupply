@@ -79,7 +79,6 @@ class ShippingService
                         'currency' => 'aud',
                     ],
                     'display_name' => $label,
-                    'allowed_countries' => $this->shippingCountriesForLabel($label),
                 ],
             ])
             ->values()
