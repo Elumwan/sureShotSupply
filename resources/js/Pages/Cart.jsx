@@ -14,6 +14,7 @@ function Cart({ items = [], total = 0 }) {
     const { flash = {} } = usePage().props;
     const [checkoutStarted, setCheckoutStarted] = useState(false);
     const [clientSecret, setClientSecret] = useState('');
+    const [sessionId, setSessionId] = useState('');
     const [checkoutLoading, setCheckoutLoading] = useState(false);
     const [checkoutError, setCheckoutError] = useState('');
 
@@ -44,6 +45,7 @@ function Cart({ items = [], total = 0 }) {
             }
 
             setClientSecret(payload.clientSecret ?? '');
+            setSessionId(payload.sessionId ?? '');
         } catch (error) {
             setCheckoutError(error.message ?? 'Unable to start checkout right now.');
         } finally {
@@ -54,8 +56,55 @@ function Cart({ items = [], total = 0 }) {
     function resetCheckout() {
         setCheckoutStarted(false);
         setClientSecret('');
+        setSessionId('');
         setCheckoutLoading(false);
         setCheckoutError('');
+    }
+
+    async function handleShippingDetailsChange(event) {
+        const country = event?.shippingDetails?.address?.country;
+
+        if (!sessionId || !country) {
+            return {
+                type: 'reject',
+                errorMessage: 'Sorry, we could not calculate shipping for this address. Please try again.',
+            };
+        }
+
+        try {
+            const response = await fetch('/checkout/shipping-rate', {
+                method: 'POST',
+                credentials: 'same-origin',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-XSRF-TOKEN': decodeURIComponent(
+                        document.cookie.match(/XSRF-TOKEN=([^;]+)/)?.[1] ?? '',
+                    ),
+                },
+                body: JSON.stringify({
+                    session_id: sessionId,
+                    country,
+                }),
+            });
+
+            const payload = await response.json();
+
+            if (!response.ok || payload.success !== true) {
+                return {
+                    type: 'reject',
+                    errorMessage: 'Sorry, we could not calculate shipping for this address. Please try again.',
+                };
+            }
+
+            return { type: 'accept' };
+        } catch {
+            return {
+                type: 'reject',
+                errorMessage: 'Sorry, we could not calculate shipping for this address. Please try again.',
+            };
+        }
     }
 
     if (items.length === 0) {
@@ -236,7 +285,13 @@ function Cart({ items = [], total = 0 }) {
 
                     {clientSecret && stripePromise ? (
                         <div className="mt-8">
-                            <EmbeddedCheckoutProvider stripe={stripePromise} options={{ clientSecret }}>
+                            <EmbeddedCheckoutProvider
+                                stripe={stripePromise}
+                                options={{
+                                    clientSecret,
+                                    onShippingDetailsChange: handleShippingDetailsChange,
+                                }}
+                            >
                                 <EmbeddedCheckout />
                             </EmbeddedCheckoutProvider>
                         </div>

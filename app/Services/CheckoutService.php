@@ -33,10 +33,24 @@ class CheckoutService
             'mode' => 'payment',
             'ui_mode' => 'embedded',
             'return_url' => $returnUrl . '?session_id={CHECKOUT_SESSION_ID}',
+            'permissions' => [
+                'update_shipping_details' => 'server_only',
+            ],
             'shipping_address_collection' => [
                 'allowed_countries' => $this->shippingService->allowedCountries(),
             ],
-            'shipping_options' => $this->shippingService->shippingOptions(),
+            'shipping_options' => [
+                [
+                    'shipping_rate_data' => [
+                        'type' => 'fixed_amount',
+                        'fixed_amount' => [
+                            'amount' => 0,
+                            'currency' => 'aud',
+                        ],
+                        'display_name' => 'Calculating...',
+                    ],
+                ],
+            ],
             'metadata' => [
                 'cart' => json_encode($cartItems, JSON_THROW_ON_ERROR),
             ],
@@ -48,5 +62,25 @@ class CheckoutService
         Stripe::setApiKey(config('services.stripe.secret'));
 
         return Session::retrieve($sessionId);
+    }
+
+    public function updateShippingRate(string $sessionId, int $rate, string $label): void
+    {
+        Stripe::setApiKey(config('services.stripe.secret'));
+
+        Session::update($sessionId, [
+            'shipping_options' => [
+                [
+                    'shipping_rate_data' => [
+                        'type' => 'fixed_amount',
+                        'fixed_amount' => [
+                            'amount' => $rate,
+                            'currency' => 'aud',
+                        ],
+                        'display_name' => $label,
+                    ],
+                ],
+            ],
+        ]);
     }
 }
