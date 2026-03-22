@@ -1,11 +1,62 @@
 import { Link, router, usePage } from '@inertiajs/react';
+import { EmbeddedCheckout, EmbeddedCheckoutProvider } from '@stripe/react-stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
+import { useState } from 'react';
 
 import ProductImage from '../Components/ProductImage';
 import { formatPrice } from '../lib/storefront';
 import SiteLayout from '../Layouts/SiteLayout';
 
+const publishableKey = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY ?? '';
+const stripePromise = publishableKey ? loadStripe(publishableKey) : null;
+
 function Cart({ items = [], total = 0 }) {
     const { flash = {} } = usePage().props;
+    const [checkoutStarted, setCheckoutStarted] = useState(false);
+    const [clientSecret, setClientSecret] = useState('');
+    const [checkoutLoading, setCheckoutLoading] = useState(false);
+    const [checkoutError, setCheckoutError] = useState('');
+
+    async function startCheckout() {
+        setCheckoutStarted(true);
+        setCheckoutLoading(true);
+        setCheckoutError('');
+
+        try {
+            const response = await fetch('/checkout/session', {
+                method: 'POST',
+                credentials: 'same-origin',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-XSRF-TOKEN': decodeURIComponent(
+                        document.cookie.match(/XSRF-TOKEN=([^;]+)/)?.[1] ?? '',
+                    ),
+                },
+                body: JSON.stringify({}),
+            });
+
+            const payload = await response.json();
+
+            if (!response.ok) {
+                throw new Error(payload.message ?? 'Unable to start checkout right now.');
+            }
+
+            setClientSecret(payload.clientSecret ?? '');
+        } catch (error) {
+            setCheckoutError(error.message ?? 'Unable to start checkout right now.');
+        } finally {
+            setCheckoutLoading(false);
+        }
+    }
+
+    function resetCheckout() {
+        setCheckoutStarted(false);
+        setClientSecret('');
+        setCheckoutLoading(false);
+        setCheckoutError('');
+    }
 
     if (items.length === 0) {
         return (
@@ -153,13 +204,43 @@ function Cart({ items = [], total = 0 }) {
                         </div>
                     </div>
 
-                    <button
-                        type="button"
-                        onClick={() => router.post('/checkout')}
-                        className="ghost-button mt-8 w-full"
-                    >
-                        Proceed to checkout
-                    </button>
+                    {!checkoutStarted ? (
+                        <button type="button" onClick={startCheckout} className="ghost-button mt-8 w-full">
+                            Proceed to checkout
+                        </button>
+                    ) : null}
+
+                    {checkoutStarted ? (
+                        <button
+                            type="button"
+                            onClick={resetCheckout}
+                            className="mt-4 inline-flex text-sm text-site-text-faint hover:text-site-amber"
+                        >
+                            Back
+                        </button>
+                    ) : null}
+
+                    {checkoutLoading ? (
+                        <p className="mt-6 text-sm text-site-text-muted">Preparing secure checkout…</p>
+                    ) : null}
+
+                    {checkoutError ? (
+                        <p className="mt-6 text-sm text-site-text-muted">{checkoutError}</p>
+                    ) : null}
+
+                    {checkoutStarted && !checkoutLoading && !clientSecret && !publishableKey ? (
+                        <p className="mt-6 text-sm text-site-text-muted">
+                            Stripe checkout is not configured in this environment.
+                        </p>
+                    ) : null}
+
+                    {clientSecret && stripePromise ? (
+                        <div className="mt-8">
+                            <EmbeddedCheckoutProvider stripe={stripePromise} options={{ clientSecret }}>
+                                <EmbeddedCheckout />
+                            </EmbeddedCheckoutProvider>
+                        </div>
+                    ) : null}
 
                     <Link href="/shop" className="mt-4 inline-flex text-sm text-site-text-faint hover:text-site-amber">
                         Continue shopping

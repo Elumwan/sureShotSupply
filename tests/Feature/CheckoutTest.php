@@ -24,28 +24,28 @@ it('checkout redirects to stripe when cart has items', function () {
     $service->shouldReceive('createSession')
         ->once()
         ->andReturn(StripeCheckoutSession::constructFrom([
-            'id' => 'cs_test_redirect',
-            'url' => 'https://checkout.stripe.test/session',
+            'id' => 'cs_test_embedded',
+            'client_secret' => 'cs_test_client_secret',
         ]));
 
     $this->app->instance(CheckoutService::class, $service);
 
-    $this->withHeaders([
-        'X-Inertia' => 'true',
-        'X-Requested-With' => 'XMLHttpRequest',
-        'X-Inertia-Version' => 'test',
-    ])->post('/checkout')
-        ->assertStatus(409)
-        ->assertHeader('X-Inertia-Location', 'https://checkout.stripe.test/session');
+    $this->postJson('/checkout/session')
+        ->assertOk()
+        ->assertJson([
+            'clientSecret' => 'cs_test_client_secret',
+        ]);
 });
 
 it('checkout redirects back with error when cart is empty', function () {
-    $this->post('/checkout')
-        ->assertRedirect('/cart')
-        ->assertSessionHas('error', 'Your bag is empty.');
+    $this->postJson('/checkout/session')
+        ->assertStatus(422)
+        ->assertJson([
+            'message' => 'Your bag is empty.',
+        ]);
 });
 
-it('a pending order is created when checkout session is initiated', function () {
+it('a pending order is created when checkout session is initiated and its status can be queried', function () {
     $product = Product::factory()->create([
         'is_active' => true,
         'stock_quantity' => 5,
@@ -59,14 +59,31 @@ it('a pending order is created when checkout session is initiated', function () 
         ->once()
         ->andReturn(StripeCheckoutSession::constructFrom([
             'id' => 'cs_test_pending',
-            'url' => 'https://checkout.stripe.test/session',
+            'client_secret' => 'cs_test_pending_secret',
+        ]));
+    $service->shouldReceive('retrieveSession')
+        ->once()
+        ->with('cs_test_pending')
+        ->andReturn(StripeCheckoutSession::constructFrom([
+            'id' => 'cs_test_pending',
+            'status' => 'open',
+            'customer_details' => [
+                'email' => 'alex@example.com',
+            ],
         ]));
 
     $this->app->instance(CheckoutService::class, $service);
 
-    $this->post('/checkout');
+    $this->postJson('/checkout/session')->assertOk();
 
     expect(Order::query()->where('stripe_session_id', 'cs_test_pending')->exists())->toBeTrue();
+
+    $this->getJson('/checkout/session-status?session_id=cs_test_pending')
+        ->assertOk()
+        ->assertJson([
+            'status' => 'open',
+            'customer_email' => 'alex@example.com',
+        ]);
 });
 
 it('webhook checkout session completed marks order as paid', function () {

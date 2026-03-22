@@ -72,6 +72,8 @@ Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
 Route::post('/cart/remove', [CartController::class, 'remove'])->name('cart.remove');
 Route::post('/cart/update', [CartController::class, 'update'])->name('cart.update');
 
-Route::post('/checkout', [CheckoutController::class, 'redirect'])->name('checkout.redirect');
+Route::post('/checkout/session', [CheckoutController::class, 'createSession'])->name('checkout.session');
+Route::get('/checkout/session-status', [CheckoutController::class, 'sessionStatus'])->name('checkout.session-status');
+Route::get('/checkout/return', fn () => inertia('CheckoutReturn'))->name('checkout.return');
 Route::get('/checkout/success', [CheckoutController::class, 'success'])->name('checkout.success');
 Route::get('/checkout/cancel', [CheckoutController::class, 'cancel'])->name('checkout.cancel');
