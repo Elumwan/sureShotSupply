@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Order;
 use App\Services\CartService;
 use App\Services\CheckoutService;
+use App\Services\ShippingService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -38,6 +39,7 @@ class CheckoutController extends Controller
 
         return response()->json([
             'clientSecret' => $session->client_secret,
+            'sessionId' => $session->id,
         ]);
     }
 
@@ -56,6 +58,35 @@ class CheckoutController extends Controller
         return response()->json([
             'status' => $session->status,
             'customer_email' => data_get($session, 'customer_details.email'),
+        ]);
+    }
+
+    public function calculateShippingRate(
+        Request $request,
+        ShippingService $shippingService,
+        CheckoutService $checkoutService
+    ): JsonResponse
+    {
+        $data = $request->validate([
+            'session_id' => ['required', 'string'],
+            'country' => ['required', 'string'],
+        ]);
+
+        $rate = $shippingService->getRateForCountry($data['country']);
+        $label = $shippingService->getLabelForCountry($data['country']);
+
+        try {
+            $checkoutService->updateShippingRate($data['session_id'], $rate, $label);
+        } catch (\Throwable) {
+            return response()->json([
+                'success' => false,
+            ], 422);
+        }
+
+        return response()->json([
+            'success' => true,
+            'rate' => $rate,
+            'label' => $label,
         ]);
     }
 

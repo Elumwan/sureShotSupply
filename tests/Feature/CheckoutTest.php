@@ -34,6 +34,7 @@ it('checkout redirects to stripe when cart has items', function () {
         ->assertOk()
         ->assertJson([
             'clientSecret' => 'cs_test_client_secret',
+            'sessionId' => 'cs_test_embedded',
         ]);
 });
 
@@ -83,6 +84,43 @@ it('a pending order is created when checkout session is initiated and its status
         ->assertJson([
             'status' => 'open',
             'customer_email' => 'alex@example.com',
+        ]);
+});
+
+it('calculates and updates the dynamic shipping rate for a country', function () {
+    $service = \Mockery::mock(CheckoutService::class);
+    $service->shouldReceive('updateShippingRate')
+        ->once()
+        ->with('cs_test_shipping_rate', 2500, 'UK, US & Canada');
+
+    $this->app->instance(CheckoutService::class, $service);
+
+    $this->postJson('/checkout/shipping-rate', [
+        'session_id' => 'cs_test_shipping_rate',
+        'country' => 'GB',
+    ])->assertOk()
+        ->assertJson([
+            'success' => true,
+            'rate' => 2500,
+            'label' => 'UK, US & Canada',
+        ]);
+});
+
+it('returns 422 when dynamic shipping update fails', function () {
+    $service = \Mockery::mock(CheckoutService::class);
+    $service->shouldReceive('updateShippingRate')
+        ->once()
+        ->with('cs_test_shipping_rate', 1000, 'Australia')
+        ->andThrow(new Exception('Stripe update failed'));
+
+    $this->app->instance(CheckoutService::class, $service);
+
+    $this->postJson('/checkout/shipping-rate', [
+        'session_id' => 'cs_test_shipping_rate',
+        'country' => 'AU',
+    ])->assertStatus(422)
+        ->assertJson([
+            'success' => false,
         ]);
 });
 
