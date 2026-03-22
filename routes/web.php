@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\OrderLookupController;
 use App\Http\Controllers\WebhookController;
 use App\Models\CameraListing;
 use App\Models\Product;
@@ -78,3 +79,6 @@ Route::post('/checkout/shipping-rate', [CheckoutController::class, 'calculateShi
 Route::get('/checkout/return', fn () => inertia('CheckoutReturn'))->name('checkout.return');
 Route::get('/checkout/success', [CheckoutController::class, 'success'])->name('checkout.success');
 Route::get('/checkout/cancel', [CheckoutController::class, 'cancel'])->name('checkout.cancel');
+
+Route::get('/order-lookup', [OrderLookupController::class, 'show'])->name('order.lookup');
+Route::post('/order-lookup', [OrderLookupController::class, 'lookup'])->name('order.lookup.submit');

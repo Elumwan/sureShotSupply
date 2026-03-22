@@ -55,7 +55,14 @@ it('sends order confirmation to the customer when the webhook fires', function (
     $order->refresh();
 
     Mail::assertSent(OrderConfirmation::class, function (OrderConfirmation $mail) use ($order): bool {
-        return $mail->hasTo($order->customer_email) && $mail->order->is($order);
+        $rendered = $mail->render();
+        $expectedLink = url('/order-lookup').'?reference='.$order->reference.'&email='.urlencode($order->customer_email);
+
+        return $mail->hasTo($order->customer_email)
+            && $mail->order->is($order)
+            && str_contains($rendered, 'Want to check on your order? View your order status online:')
+            && str_contains($rendered, $expectedLink)
+            && str_contains($rendered, 'Track your order');
     });
 });
 

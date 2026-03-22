@@ -56,6 +56,16 @@
                     </div>
                 </div>
 
+                <p style="margin:24px 0 0;color:#d0ccc4;font-size:14px;line-height:1.8;">
+                    Want to check on your order? View your order status online:
+                </p>
+                <p style="margin:10px 0 0;">
+                    <a
+                        href="{{ url('/order-lookup') }}?reference={{ $order->reference }}&email={{ urlencode($order->customer_email) }}"
+                        style="color:#c4924a;text-decoration:none;"
+                    >Track your order →</a>
+                </p>
+
                 <p style="margin:28px 0 0;color:#d0ccc4;font-size:14px;line-height:1.8;">
                     Questions about your order? Reply to this email and we'll sort it out. — SureShotSupply
                 </p>
