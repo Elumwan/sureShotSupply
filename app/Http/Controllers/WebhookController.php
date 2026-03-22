@@ -52,7 +52,7 @@ class WebhookController extends Controller
         }
 
         $shippingService = app(ShippingService::class);
-        $shipping = $session->shipping_details->address ?? null;
+        $shipping = $session->collected_information->shipping_details->address ?? $session->shipping_details->address ?? null;
         $cartItems = json_decode($session->metadata->cart ?? '[]', true);
         $shippingCountry = $shipping->country ?? null;
         $shippingRateLabel = filled($shippingCountry)
