@@ -21,6 +21,8 @@ class Order extends Model
         'stripe_payment_intent',
         'customer_name',
         'customer_email',
+        'shipping_country',
+        'shipping_rate_label',
         'status',
         'total',
         'shipping_address',
@@ -52,5 +54,10 @@ class Order extends Model
         $id = $this->id ?? 0;
 
         return 'SSS-'.str_pad((string) $id, 6, '0', STR_PAD_LEFT);
+    }
+
+    public function getShippingAmountAttribute(): int
+    {
+        return max($this->total - (int) $this->items->sum(fn (OrderItem $item) => $item->price * $item->quantity), 0);
     }
 }

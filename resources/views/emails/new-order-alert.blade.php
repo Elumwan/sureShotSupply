@@ -46,6 +46,13 @@
                         @endforeach
                     </table>
 
+                    @if ($order->shipping_rate_label && $order->shipping_country)
+                        <div style="display:flex;justify-content:space-between;align-items:center;padding:18px 20px;border-top:1px solid #252525;">
+                            <div style="font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:#585858;">Shipping</div>
+                            <div style="color:#d0ccc4;font-size:14px;">{{ $order->shipping_rate_label }} — ${{ number_format($order->shipping_amount / 100, 2) }}</div>
+                        </div>
+                    @endif
+
                     <div style="display:flex;justify-content:space-between;align-items:center;padding:18px 20px;border-top:1px solid #1e1e1e;">
                         <div style="font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:#585858;">Total</div>
                         <div style="color:#c4924a;font-size:18px;">${{ number_format($order->total / 100, 2) }} AUD</div>

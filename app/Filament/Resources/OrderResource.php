@@ -41,6 +41,8 @@ class OrderResource extends Resource
                         TextEntry::make('id'),
                         TextEntry::make('customer_name')->default('Guest checkout'),
                         TextEntry::make('customer_email')->default('Pending'),
+                        TextEntry::make('shipping_country')->default('Not collected'),
+                        TextEntry::make('shipping_rate_label')->default('Not selected'),
                         TextEntry::make('status')->badge()
                             ->color(fn (string $state): string => match ($state) {
                                 'pending' => 'warning',
@@ -94,6 +96,12 @@ class OrderResource extends Resource
                 TextColumn::make('total')
                     ->money('AUD', divideBy: 100)
                     ->sortable(),
+                TextColumn::make('shipping_country')
+                    ->default('—')
+                    ->searchable(),
+                TextColumn::make('shipping_rate_label')
+                    ->default('—')
+                    ->searchable(),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable(),

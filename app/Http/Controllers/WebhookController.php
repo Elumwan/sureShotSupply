@@ -6,8 +6,10 @@ use App\Mail\NewOrderAlert;
 use App\Mail\OrderConfirmation;
 use App\Models\CameraListing;
 use App\Models\Order;
+use App\Models\OrderItem;
 use App\Models\Product;
 use App\Services\CartService;
+use App\Services\ShippingService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
@@ -49,14 +51,22 @@ class WebhookController extends Controller
             return;
         }
 
+        $shippingService = app(ShippingService::class);
         $shipping = $session->shipping_details->address ?? null;
         $cartItems = json_decode($session->metadata->cart ?? '[]', true);
+        $shippingCountry = $shipping->country ?? null;
+        $shippingRateLabel = filled($shippingCountry)
+            ? $shippingService->getLabelForCountry($shippingCountry)
+            : null;
 
         $order->update([
             'status' => 'paid',
             'stripe_payment_intent' => $session->payment_intent ?? null,
             'customer_name' => $session->customer_details->name ?? '',
             'customer_email' => $session->customer_details->email ?? '',
+            'shipping_country' => $shippingCountry,
+            'shipping_rate_label' => $shippingRateLabel,
+            'total' => $session->amount_total ?? $order->total,
             'shipping_address' => $shipping ? [
                 'line1' => $shipping->line1 ?? null,
                 'line2' => $shipping->line2 ?? null,
