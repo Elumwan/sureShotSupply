@@ -7,6 +7,8 @@ use Stripe\Stripe;
 
 class CheckoutService
 {
+    public function __construct(protected ShippingService $shippingService) {}
+
     public function createSession(array $cartItems, string $returnUrl): Session
     {
         Stripe::setApiKey(config('services.stripe.secret'));
@@ -30,7 +32,7 @@ class CheckoutService
             'line_items' => $lineItems,
             'mode' => 'payment',
             'ui_mode' => 'embedded',
-            'return_url' => $returnUrl.'?session_id={CHECKOUT_SESSION_ID}',
+            'return_url' => $returnUrl . '?session_id={CHECKOUT_SESSION_ID}',
             'shipping_address_collection' => [
                 'allowed_countries' => $this->shippingService->allowedCountries(),
             ],
