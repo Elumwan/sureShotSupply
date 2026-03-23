@@ -3,7 +3,6 @@ import { usePage } from '@inertiajs/react';
 
 import Footer from '../Components/Footer';
 import Nav from '../Components/Nav';
-import Seo from '../Components/Seo';
 
 const SiteSettingsContext = createContext({});
 
@@ -17,7 +16,6 @@ export default function SiteLayout({ children }) {
     return (
         <SiteSettingsContext.Provider value={siteSettings}>
             <div className="min-h-screen bg-site-bg text-site-text">
-                <Seo />
                 <Nav />
                 <div className="pt-20">{children}</div>
                 <Footer />

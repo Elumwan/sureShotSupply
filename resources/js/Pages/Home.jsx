@@ -1,5 +1,3 @@
-import { usePage } from '@inertiajs/react';
-
 import CameraCard from '../Components/CameraCard';
 import FeaturedCameraCard from '../Components/FeaturedCameraCard';
 import Hero from '../Components/Hero';
@@ -10,16 +8,11 @@ import SiteLayout, { useSiteSettings } from '../Layouts/SiteLayout';
 
 function Home({ featuredCamera, cameras, products }) {
     const siteSettings = useSiteSettings();
-    const { seo = {} } = usePage().props;
     const moreCameras = (cameras ?? []).filter((camera) => camera.slug !== featuredCamera?.slug);
 
     return (
         <>
-            <Seo
-                title={null}
-                description={seo.default_description}
-                ogImage={seo.og_image}
-            />
+            <Seo />
             <Hero
                 heroImage={siteSettings.heroImage}
                 heroTitle={siteSettings.heroTitle}
