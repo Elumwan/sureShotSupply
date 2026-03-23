@@ -122,8 +122,8 @@ function OrderLookup({ order = null }) {
                                 <span>{formatAud(subtotal)}</span>
                             </div>
                             <div className="flex items-center justify-between px-6 py-4 text-sm text-site-text-muted">
-                                <span>Shipping</span>
-                                <span>{order.shipping_rate_label ?? '—'}</span>
+                                <span>Shipping {order.shipping_rate_label ? `— ${order.shipping_rate_label}` : ''}</span>
+                                <span>{formatAud(order.shipping_cost)}</span>
                             </div>
                             <div className="flex items-center justify-between px-6 py-5 text-base text-site-text">
                                 <span>Total</span>

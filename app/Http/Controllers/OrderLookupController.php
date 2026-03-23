@@ -53,6 +53,7 @@ class OrderLookupController extends Controller
                     'subtotal' => $item->price * $item->quantity,
                 ])->values()->all(),
                 'shipping_address' => $order->shipping_address,
+                'shipping_cost' => $order->total - $order->items->sum(fn ($item) => $item->price * $item->quantity),
                 'shipping_rate_label' => $order->shipping_rate_label,
                 'shipping_country' => $order->shipping_country,
             ],
