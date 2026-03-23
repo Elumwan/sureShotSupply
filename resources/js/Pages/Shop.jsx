@@ -1,10 +1,15 @@
 import ProductCard from '../Components/ProductCard';
+import Seo from '../Components/Seo';
 import SectionHeader from '../Components/SectionHeader';
 import SiteLayout from '../Layouts/SiteLayout';
 
 function Shop({ products }) {
     return (
         <main className="mx-auto max-w-7xl px-6 py-16 lg:px-10 lg:py-20">
+            <Seo
+                title="Accessories"
+                description="Hot shoe covers, wrist straps, neck straps and more."
+            />
             <SectionHeader
                 eyebrow="Always in stock"
                 title="Accessories"

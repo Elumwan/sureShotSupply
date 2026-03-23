@@ -3,16 +3,41 @@ import { Link } from '@inertiajs/react';
 
 import AddToBagButton from '../Components/AddToBagButton';
 import ProductImage from '../Components/ProductImage';
+import Seo from '../Components/Seo';
 import { formatPrice } from '../lib/storefront';
 import SiteLayout from '../Layouts/SiteLayout';
+
+function truncateDescription(description, fallback) {
+    if (!description) {
+        return fallback;
+    }
+
+    const trimmed = description.trim();
+
+    if (trimmed.length <= 160) {
+        return trimmed;
+    }
+
+    return `${trimmed.slice(0, 157).trimEnd()}...`;
+}
 
 function CameraDetail({ camera }) {
     const images = camera.full_images ?? [];
     const [selectedIndex, setSelectedIndex] = useState(0);
     const selectedImage = images[selectedIndex] ?? null;
+    const description = truncateDescription(
+        camera.description,
+        `${camera.name} — available at SureShotSupply.`,
+    );
 
     return (
         <main className="mx-auto max-w-7xl px-6 py-16 lg:px-10 lg:py-20">
+            <Seo
+                title={camera.name}
+                description={description}
+                ogImage={camera.primary_image}
+                ogType="product"
+            />
             <Link
                 href="/cameras"
                 className="text-[10px] uppercase tracking-[0.22em] text-site-text-faint hover:text-site-amber"

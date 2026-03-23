@@ -3,6 +3,7 @@ import './bootstrap';
 
 import { createInertiaApp } from '@inertiajs/react';
 import { createRoot } from 'react-dom/client';
+import { HelmetProvider } from 'react-helmet-async';
 
 createInertiaApp({
     resolve: (name) => {
@@ -11,7 +12,11 @@ createInertiaApp({
         return pages[`./Pages/${name}.jsx`];
     },
     setup({ el, App, props }) {
-        createRoot(el).render(<App {...props} />);
+        createRoot(el).render(
+            <HelmetProvider>
+                <App {...props} />
+            </HelmetProvider>,
+        );
     },
     progress: {
         color: '#111827',

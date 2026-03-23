@@ -53,6 +53,16 @@ class HandleInertiaRequests extends Middleware
                     'Handpicked cameras and accessories for photographers who care about what they carry.'
                 ),
             ],
+            'seo' => [
+                'site_name' => SiteSetting::get('seo_site_name', 'SureShotSupply'),
+                'default_title' => SiteSetting::get('seo_default_title', 'SureShotSupply — Cameras & Accessories'),
+                'default_description' => SiteSetting::get(
+                    'seo_default_description',
+                    'Hand-picked second-hand cameras and premium accessories. Shop SureShotSupply.'
+                ),
+                'og_image' => SiteSetting::get('seo_og_image'),
+                'twitter_handle' => SiteSetting::get('seo_twitter_handle'),
+            ],
             'cartCount' => app(CartService::class)->count(),
             'cartItems' => fn () => collect(app(CartService::class)->items())
                 ->map(fn (array $item): array => [

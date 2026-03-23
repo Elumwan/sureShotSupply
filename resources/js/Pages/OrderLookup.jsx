@@ -1,5 +1,6 @@
 import { Link, useForm, usePage } from '@inertiajs/react';
 
+import Seo from '../Components/Seo';
 import SiteLayout from '../Layouts/SiteLayout';
 
 function formatAud(cents) {
@@ -31,6 +32,11 @@ function OrderLookup({ order = null }) {
 
     return (
         <main className="mx-auto max-w-5xl px-6 py-16 lg:px-10 lg:py-20">
+            <Seo
+                title="Track Your Order"
+                description="Enter your order reference and email to view your order status."
+                robots="noindex, nofollow"
+            />
             {!order ? (
                 <>
                     <p className="eyebrow">Track your</p>

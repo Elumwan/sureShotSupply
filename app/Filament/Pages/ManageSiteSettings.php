@@ -36,6 +36,14 @@ class ManageSiteSettings extends Page implements HasForms
                 'hero_subtitle',
                 'Handpicked cameras and accessories for photographers who care about what they carry.'
             ),
+            'seo_site_name' => SiteSetting::get('seo_site_name', 'SureShotSupply'),
+            'seo_default_title' => SiteSetting::get('seo_default_title', 'SureShotSupply — Cameras & Accessories'),
+            'seo_default_description' => SiteSetting::get(
+                'seo_default_description',
+                'Hand-picked second-hand cameras and premium accessories. Shop SureShotSupply.'
+            ),
+            'seo_og_image' => SiteSetting::get('seo_og_image'),
+            'seo_twitter_handle' => SiteSetting::get('seo_twitter_handle'),
             'shipping_australia' => (int) SiteSetting::get('shipping_australia', 1000),
             'shipping_new_zealand' => (int) SiteSetting::get('shipping_new_zealand', 1500),
             'shipping_uk_us_canada' => (int) SiteSetting::get('shipping_uk_us_canada', 2500),
@@ -70,6 +78,25 @@ class ManageSiteSettings extends Page implements HasForms
                             ->label('Hero subtitle')
                             ->rows(3),
                     ]),
+                Section::make('SEO')
+                    ->schema([
+                        TextInput::make('seo_site_name')
+                            ->label('Site name')
+                            ->required(),
+                        TextInput::make('seo_default_title')
+                            ->label('Default title')
+                            ->required(),
+                        Textarea::make('seo_default_description')
+                            ->label('Default description')
+                            ->rows(3)
+                            ->required(),
+                        TextInput::make('seo_og_image')
+                            ->label('Open Graph image URL')
+                            ->url(),
+                        TextInput::make('seo_twitter_handle')
+                            ->label('Twitter handle'),
+                    ])
+                    ->columns(2),
                 Section::make('Shipping Rates (AUD)')
                     ->description('Values are stored in cents. Example: 1000 = $10.00.')
                     ->schema([
@@ -114,6 +141,14 @@ class ManageSiteSettings extends Page implements HasForms
             'hero_subtitle',
             $state['hero_subtitle'] ?? 'Handpicked cameras and accessories for photographers who care about what they carry.'
         );
+        SiteSetting::set('seo_site_name', $state['seo_site_name'] ?? 'SureShotSupply');
+        SiteSetting::set('seo_default_title', $state['seo_default_title'] ?? 'SureShotSupply — Cameras & Accessories');
+        SiteSetting::set(
+            'seo_default_description',
+            $state['seo_default_description'] ?? 'Hand-picked second-hand cameras and premium accessories. Shop SureShotSupply.'
+        );
+        SiteSetting::set('seo_og_image', $state['seo_og_image'] ?: null);
+        SiteSetting::set('seo_twitter_handle', $state['seo_twitter_handle'] ?: null);
         SiteSetting::set('shipping_australia', (string) ($state['shipping_australia'] ?? 1000));
         SiteSetting::set('shipping_new_zealand', (string) ($state['shipping_new_zealand'] ?? 1500));
         SiteSetting::set('shipping_uk_us_canada', (string) ($state['shipping_uk_us_canada'] ?? 2500));

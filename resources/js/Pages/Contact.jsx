@@ -1,5 +1,6 @@
 import { useForm, usePage } from '@inertiajs/react';
 
+import Seo from '../Components/Seo';
 import SectionHeader from '../Components/SectionHeader';
 import SiteLayout from '../Layouts/SiteLayout';
 
@@ -18,6 +19,10 @@ function Contact() {
 
     return (
         <main className="mx-auto max-w-4xl px-6 py-16 lg:px-10 lg:py-20">
+            <Seo
+                title="Contact"
+                description="Get in touch with SureShotSupply."
+            />
             <SectionHeader
                 eyebrow="Contact"
                 title="Get in touch"

@@ -2,6 +2,7 @@ import { Link } from '@inertiajs/react';
 
 import CameraCard from '../Components/CameraCard';
 import FeaturedCameraCard from '../Components/FeaturedCameraCard';
+import Seo from '../Components/Seo';
 import SectionHeader from '../Components/SectionHeader';
 import SiteLayout from '../Layouts/SiteLayout';
 
@@ -10,6 +11,10 @@ function Cameras({ featuredCamera, cameras }) {
 
     return (
         <main className="mx-auto max-w-7xl px-6 py-16 lg:px-10 lg:py-20">
+            <Seo
+                title="Cameras"
+                description="Browse our hand-picked selection of second-hand cameras."
+            />
             <SectionHeader
                 eyebrow="Available now"
                 title="Cameras"

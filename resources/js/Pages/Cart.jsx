@@ -4,6 +4,7 @@ import { loadStripe } from '@stripe/stripe-js';
 import { useCallback, useState } from 'react';
 
 import ProductImage from '../Components/ProductImage';
+import Seo from '../Components/Seo';
 import { formatPrice } from '../lib/storefront';
 import SiteLayout from '../Layouts/SiteLayout';
 
@@ -110,21 +111,25 @@ function Cart({ items = [], total = 0 }) {
 
     if (items.length === 0) {
         return (
-            <main className="mx-auto max-w-4xl px-6 py-16 lg:px-10 lg:py-20">
-                <p className="eyebrow">Your</p>
-                <h1 className="mt-4 text-4xl sm:text-5xl">Bag</h1>
-                <div className="mt-10 panel-surface p-10 text-center">
-                    <p className="text-xl text-site-text-muted">Your bag is empty.</p>
-                    <Link href="/shop" className="mt-6 inline-flex text-sm text-site-amber hover:text-site-text">
-                        Return to the shop
-                    </Link>
-                </div>
-            </main>
+            <>
+                <Seo title="Your Bag" robots="noindex, nofollow" />
+                <main className="mx-auto max-w-4xl px-6 py-16 lg:px-10 lg:py-20">
+                    <p className="eyebrow">Your</p>
+                    <h1 className="mt-4 text-4xl sm:text-5xl">Bag</h1>
+                    <div className="mt-10 panel-surface p-10 text-center">
+                        <p className="text-xl text-site-text-muted">Your bag is empty.</p>
+                        <Link href="/shop" className="mt-6 inline-flex text-sm text-site-amber hover:text-site-text">
+                            Return to the shop
+                        </Link>
+                    </div>
+                </main>
+            </>
         );
     }
 
     return (
         <main className="mx-auto max-w-7xl px-6 py-16 lg:px-10 lg:py-20">
+            <Seo title="Your Bag" robots="noindex, nofollow" />
             <p className="eyebrow">Your</p>
             <h1 className="mt-4 text-4xl sm:text-5xl">Bag</h1>
 

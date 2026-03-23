@@ -3,6 +3,7 @@
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\OrderLookupController;
+use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\WebhookController;
 use App\Models\CameraListing;
 use App\Models\Product;
@@ -57,6 +58,8 @@ Route::get('/shop/{slug}', function (string $slug) {
 Route::get('/contact', function () {
     return inertia('Contact');
 });
+
+Route::get('/sitemap.xml', SitemapController::class)->name('sitemap');
 
 Route::post('/contact', function (Request $request) {
     $request->validate([
