@@ -47,6 +47,8 @@ class ProductResource extends Resource
                     ->default(0),
                 SpatieMediaLibraryFileUpload::make('images')
                     ->collection('images')
+                    ->disk('public')
+                    ->visibility('public')
                     ->multiple()
                     ->reorderable(true)
                     ->deletable(true)

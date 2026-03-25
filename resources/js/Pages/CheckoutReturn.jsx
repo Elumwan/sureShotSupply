@@ -1,4 +1,4 @@
-import { Link, router } from '@inertiajs/react';
+import { Link } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 
 import Seo from '../Components/Seo';
@@ -35,7 +35,7 @@ function CheckoutReturn() {
                 }
 
                 if (payload.status === 'complete') {
-                    router.visit(`/checkout/success?session_id=${encodeURIComponent(sessionId)}`);
+                    window.location.href = `/checkout/success?session_id=${encodeURIComponent(sessionId)}`;
                     return;
                 }
 

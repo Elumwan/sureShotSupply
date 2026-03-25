@@ -45,7 +45,7 @@ function CameraDetail({ camera }) {
                 ← All cameras
             </Link>
 
-            <section className="mt-8 grid gap-10 lg:grid-cols-[1.05fr_0.95fr]">
+            <section className="mt-8 grid gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:items-start">
                 <div>
                     <ProductImage
                         src={selectedImage?.full ?? camera.featured_image ?? camera.primary_image}
@@ -77,12 +77,12 @@ function CameraDetail({ camera }) {
                     ) : null}
                 </div>
 
-                <div className="flex flex-col justify-between">
+                <div className="min-w-0 space-y-10 lg:pt-2">
                     <div>
                         <p className="text-[11px] uppercase tracking-[0.18em] text-site-text-faint">
                             {[camera.make, camera.model, camera.year, camera.type].filter(Boolean).join(' · ')}
                         </p>
-                        <h1 className="mt-4 text-4xl leading-tight sm:text-5xl">{camera.name}</h1>
+                        <h1 className="mt-4 break-words text-4xl leading-tight sm:text-5xl">{camera.name}</h1>
                         <div className="mt-6 inline-flex border border-site-border-light px-3 py-2 text-[10px] uppercase tracking-[0.2em] text-site-text-muted">
                             Condition: {camera.condition}
                         </div>

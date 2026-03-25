@@ -16,7 +16,7 @@ export default function Nav() {
             as="nav"
             className="fixed inset-x-0 top-0 z-50 border-b border-site-border bg-site-bg/95 backdrop-blur-sm"
         >
-            {({ open }) => (
+            {({ open, close }) => (
                 <>
                     <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 lg:px-10">
                         <Link href="/" className="text-lg font-light tracking-[0.08em] text-site-text">
@@ -42,7 +42,31 @@ export default function Nav() {
                             Bag — {cartCount}
                         </Link>
 
-                        <div className="md:hidden">
+                        <div className="flex items-center gap-2 md:hidden">
+                            <Link
+                                href="/cart"
+                                onClick={() => close()}
+                                className="inline-flex items-center gap-2 px-2 py-1 text-site-text-faint transition hover:text-site-text"
+                            >
+                                <svg
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth="1.5"
+                                    className="h-5 w-5"
+                                    aria-hidden="true"
+                                >
+                                    <path d="M6.75 8.25h10.5l-.84 9.24a2.25 2.25 0 0 1-2.24 2.01H9.83a2.25 2.25 0 0 1-2.24-2.01l-.84-9.24Z" />
+                                    <path d="M9 9V7.5a3 3 0 1 1 6 0V9" />
+                                </svg>
+                                <span
+                                    className={`text-[10px] uppercase tracking-[0.2em] ${
+                                        cartCount > 0 ? 'text-site-amber' : 'text-site-text-faint'
+                                    }`}
+                                >
+                                    {cartCount}
+                                </span>
+                            </Link>
                             <Disclosure.Button className="flex flex-col gap-1.5 p-2 text-site-text-faint transition hover:text-site-text">
                                 <span
                                     className={`h-px w-5 bg-current transition ${open ? 'translate-y-[7px] rotate-45' : ''}`}
@@ -63,17 +87,12 @@ export default function Nav() {
                                 <Link
                                     key={link.label}
                                     href={link.href}
+                                    onClick={() => close()}
                                     className="text-[10px] uppercase tracking-[0.22em] text-site-text-muted"
                                 >
                                     {link.label}
                                 </Link>
                             ))}
-                            <Link
-                                href="/cart"
-                                className="pt-2 text-[10px] uppercase tracking-[0.22em] text-site-text-faint"
-                            >
-                                Bag — {cartCount}
-                            </Link>
                         </div>
                     </Disclosure.Panel>
                 </>

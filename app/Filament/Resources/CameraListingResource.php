@@ -67,6 +67,8 @@ class CameraListingResource extends Resource
                     ->helperText('Enter amount in cents (e.g. 32000 for $320.00)'),
                 SpatieMediaLibraryFileUpload::make('images')
                     ->collection('images')
+                    ->disk('public')
+                    ->visibility('public')
                     ->multiple()
                     ->reorderable(true)
                     ->deletable(true)

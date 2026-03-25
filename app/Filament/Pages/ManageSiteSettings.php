@@ -61,6 +61,7 @@ class ManageSiteSettings extends Page implements HasForms
                         FileUpload::make('hero_image')
                             ->label('Hero background image')
                             ->disk('public')
+                            ->visibility('public')
                             ->directory('site')
                             ->acceptedFileTypes([
                                 'image/jpeg',

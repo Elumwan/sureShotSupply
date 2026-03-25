@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from '@inertiajs/react';
 
 import AddToBagButton from '../Components/AddToBagButton';
@@ -24,11 +24,17 @@ function truncateDescription(description, fallback) {
 function ProductDetail({ product }) {
     const images = product.full_images ?? [];
     const [selectedIndex, setSelectedIndex] = useState(0);
+    const [quantity, setQuantity] = useState(1);
     const selectedImage = images[selectedIndex] ?? null;
+    const maxQuantity = Math.max(product.stock_quantity ?? 0, 1);
     const description = truncateDescription(
         product.description,
         `${product.name} — available at SureShotSupply.`,
     );
+
+    useEffect(() => {
+        setQuantity((current) => Math.min(current, maxQuantity));
+    }, [maxQuantity]);
 
     return (
         <main className="mx-auto max-w-7xl px-6 py-16 lg:px-10 lg:py-20">
@@ -85,9 +91,40 @@ function ProductDetail({ product }) {
                             {stockStatus(product.stock_quantity)}
                         </p>
                         <p className="mt-8 text-2xl font-light text-site-amber">{formatPrice(product.price)}</p>
+
+                        {product.stock_quantity > 0 ? (
+                            <div className="mt-8">
+                                <p className="text-[10px] uppercase tracking-[0.2em] text-site-text-faint">
+                                    Quantity
+                                </p>
+                                <div className="mt-3 inline-flex items-center border border-site-border">
+                                    <button
+                                        type="button"
+                                        onClick={() => setQuantity((current) => Math.max(1, current - 1))}
+                                        disabled={quantity <= 1}
+                                        className="px-3 py-2 text-site-text-faint transition hover:text-site-text disabled:cursor-not-allowed disabled:opacity-40"
+                                    >
+                                        −
+                                    </button>
+                                    <span className="min-w-10 text-center text-sm text-site-text-muted">
+                                        {quantity}
+                                    </span>
+                                    <button
+                                        type="button"
+                                        onClick={() => setQuantity((current) => Math.min(maxQuantity, current + 1))}
+                                        disabled={quantity >= maxQuantity}
+                                        className="px-3 py-2 text-site-text-faint transition hover:text-site-text disabled:cursor-not-allowed disabled:opacity-40"
+                                    >
+                                        +
+                                    </button>
+                                </div>
+                            </div>
+                        ) : null}
+
                         <AddToBagButton
                             type="product"
                             id={product.id}
+                            quantity={quantity}
                             disabled={product.stock_quantity <= 0}
                             disabledLabel={product.stock_quantity <= 0 ? 'Out of Stock' : 'Unavailable'}
                             className="mt-8"
